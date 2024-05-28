@@ -54,26 +54,12 @@ fn stop(state: State<'_, AppState>) {
 
 #[tauri::command]
 fn next(state: State<'_, AppState>) {
-    let mut current_index = state.current_index.lock().unwrap();
-    let active_songs = state.active_songs.lock().unwrap();
-
-    *current_index = (*current_index + 1) % active_songs.len();
-    let next_song = active_songs[*current_index].clone();
-    state.player.send_control(AudioControl::PlayFile(next_song)).unwrap();
+    state.player.send_control(AudioControl::Next).expect("Failed next command");
 }
 
 #[tauri::command]
 fn previous(state: State<'_, AppState>) {
-    let mut current_index = state.current_index.lock().unwrap();
-    let active_songs = state.active_songs.lock().unwrap();
-
-    if *current_index == 0 {
-        *current_index = active_songs.len() - 1;
-    } else {
-        *current_index -= 1;
-    }
-    let prev_song = active_songs[*current_index].clone();
-    state.player.send_control(AudioControl::PlayFile(prev_song)).unwrap();
+    state.player.send_control(AudioControl::Previous).expect("Failed previous command");
 }
 
 #[tauri::command]
