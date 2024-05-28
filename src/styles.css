@@ -1,0 +1,340 @@
+:root {
+  font-family: Inter, Avenir, Helvetica, Arial, sans-serif;
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 400;
+
+  color: #282828;
+  background-color: beige;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-text-size-adjust: 100%;
+}
+
+.body{
+   min-height: 100vh;
+}
+.container{
+   display: flex;
+}
+.sidebar{
+  display: flex;
+   min-width: 200px;
+   background-color: #282828;
+   float: left;
+   height:100vh;
+   margin:0;
+   color:beige;
+   box-shadow:0px 7px 8px 3px #282828cc;
+   border-radius: 10px;
+   flex-direction: column;
+   flex-wrap: wrap;
+}
+.sidebar button{ 
+  text-align: center;
+  margin: 6px;
+  background-color: beige;
+  color:#282828;
+  border-radius: 30px;
+  text-shadow: 0px 7px 8px #282828;
+  transition: .5s;
+  flex-shrink: 1;
+  font-weight:bold;
+}
+.sidebar button:hover{
+  color:#282828;
+  border:1px solid antiquewhite;
+  top:2px;
+  text-shadow:none;
+  background-color: antiquewhite;
+  border-bottom-left-radius: 15px;
+}
+input[type='text']{ 
+  margin:6px;
+  background-color:beige;
+  color:#282828;
+  border-radius:30px;
+  outline:none;
+  border:none;
+  height:20px;
+  transition: .5s;
+  flex-shrink: 1;
+}
+input[type='text']:hover{
+  color:#282828;
+  border:1px solid antiquewhite;
+  background-color: antiquewhite;
+  border-bottom-left-radius: 15px;
+}
+input[type='text']:active{
+  color:#282828;
+  border:1px solid antiquewhite;
+  background-color: antiquewhite;
+  border-bottom-left-radius: 15px;
+}
+
+.main {
+  flex-grow:1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+}
+.audio-controls{
+  text-align: center;
+  margin:6px;
+  margin-top:auto;
+  flex-shrink: 1;
+  border-top-left-radius: 15px;
+  border-top-right-radius: 15px;
+  margin-bottom: 0px;
+  box-shadow: 0px 7px 8px 3px #282828cc;;
+}
+#song-list{
+  display: inline-flex;
+  flex-direction: column;
+  position: relative;
+  color:white;
+}
+.song-item{
+  color: #282828;
+  position: relative;
+  top:0;
+  list-style: none;
+  margin: 4px 0px;
+  border-width:thick;
+  border-radius:0px;
+  transition: .13s;
+  cursor:pointer;
+  font-size: large;
+  font-weight: bold;
+}
+.song-item:hover{
+   top:5px;
+   color:crimson;
+}
+#current-song h2{
+  font-weight: bold;
+  font-family:"Cascadia Code";
+  text-align: center;
+  display: flex;
+  white-space: nowrap;
+  overflow: hidden;
+}
+#seek-bar{
+    width: 50%;
+    -webkit-appearance: none;
+    appearance: none;
+    background: transparent;
+    cursor: pointer;
+    height: 6px;
+    background: #282828;
+}
+
+input[type="range"]::-moz-range-thumb{
+  height: 16px;
+  width: 16px;
+  background-color: beige;
+  border-radius: 50%;
+  border: 1px solid #282828;
+  transition: .2s ease-in-out;
+}
+input[type="range"]::-webkit-slider-thumb{
+  -webkit-appearance: none;
+  appearance: none;
+  height: 16px;
+  width: 16px;
+  background-color:beige;
+  border-radius: 50%;
+  border: 1px solid #282828;
+  transition: .2s ease-in-out;
+}
+
+
+input[type="range"]:active::-webkit-slider-thumb {
+  box-shadow: 0 0 0 2px crimson;
+}
+input[type="range"]:focus::-webkit-slider-thumb {
+  box-shadow: 0 0 0 2px crimson;
+}
+
+input[type="range"]:active::-moz-range-thumb {
+  box-shadow: 0 0 0 2px crimson;
+}
+input[type="range"]:focus::-moz-range-thumb {
+  box-shadow: 0 0 0 2dvb crimson;   
+}
+
+.row {
+  display: flex;
+  justify-content: center;
+  flex-direction: row;
+  flex-wrap:wrap;
+}
+.row button{
+   margin: 5px;
+   background-color: transparent;
+   /*border:4px solid #282828;*/
+   outline:none;
+   /*box-shadow: 0px 8px 8px 3px #282828;*/
+   transition: .15s ease-in-out;
+}
+.row button:hover{
+  background-color: transparent;
+  color:#282828;
+  border:1px solid #282828ee;
+  box-shadow: 0px 7px 8px 3px #282828cc;
+  top:2px;
+}
+.row button:active{
+  box-shadow: 0px 2px 8px 3px #28282899;
+  border:1px dotted #282828ee;
+  position:relative;
+  top:8px;
+}
+
+a {
+  font-weight: 500;
+  color: #646cff;
+  text-decoration: inherit;
+}
+
+a:hover {
+  color: #535bf2;
+}
+
+h1 {
+  text-align: center;
+}
+
+button {
+  border-radius: 8px;
+  border: 2px solid transparent;
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  color: #282828;
+  background-color: beige;
+  box-shadow: 0 2px 2px rgba(0, 0, 0, 0.2);
+}
+.icon {
+  width: 24px;
+  height: 24px;
+  color: white;
+}
+button {
+  cursor: pointer;
+}
+
+button:hover {
+  border-color: beige;
+  color:#282828;
+  background-color: crimson;
+}
+button:active {
+  border-color: crimson;
+  background-color: #e8e8e8;
+}
+button {
+  outline: none;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    color: #282828;
+    background-color: beige;
+  }
+@media only screen and (max-width: 992px){
+  .container{
+     flex-direction: column;
+  }
+  .sidebar{
+     height: 150px;
+     flex-direction: row;
+     flex-shrink: 2;
+     margin: 6px;
+  }
+  .sidebar button{ 
+    flex-shrink: 2;
+    max-width: 200px;
+    max-height: 50px;
+    align-self: center;
+  }
+  input[type='text']{ 
+    flex-shrink: 2;
+    max-width: 250px;
+    max-height: 100px;
+    align-self: center;
+    padding-right: 20px;
+  }
+  .audio-controls{
+     border-radius: 15px;
+     align-self: center;
+  }
+}
+
+  a:hover {
+    color: #24c8db;
+  }
+
+  button {
+    color: #ffffff;
+    background-color: #282828;
+  }
+  button:active {
+    background-color: #282828;
+  }
+}
+/* Modal styles */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgb(0,0,0);
+  background-color: rgba(0,0,0,0.4);
+}
+
+.modal-content {
+  background-color: beige;
+  margin: 15% auto;
+  padding: 20px;
+  color:#282828;
+  box-shadow: 0px 2px 8px 3px #282828;
+  width: 80%;
+  transition: .5s;
+  border-radius: 15px;
+}
+
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+/* Selectable song list */
+.selectable-song {
+  cursor: pointer;
+  transition: .5s;
+}
+
+.selectable-song.selected {
+  background-color: crimson;
+  color:beige;
+  border-radius: 15px;
+}

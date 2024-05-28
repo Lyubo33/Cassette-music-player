@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="styles.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tauri App</title>
+    <script type="module" src="/main.js" defer></script>
+  </head>
+
+  <body>
+    <div class="container"> 
+      <aside class="sidebar">
+        <h1>Sidebar</h1>
+        <input class="search-box" type="text" placeholder="Search for playlist or song">
+          <button class="all-songs">All songs</button>
+          <button class="playlist-create">Create a new playlist</button>
+          <ul id="playlists"> 
+            <!-- Playlists will be added here -->
+          </ul>
+          <div id="playlist-modal" class="modal">
+            <div class="modal-content">
+              <span class="close" id="close-modal">&times;</span>
+              <h2>Create Playlist</h2>
+              <input type="text" id="playlist-title" placeholder="Playlist Title" />
+              <ul id="song-selection">
+                <!-- Songs will be listed here for selection -->
+              </ul>
+              <button id="create-playlist-btn">Create Playlist</button>
+            </div>
+          </div>          
+     </aside>
+   <main class="main">
+     <h1>Home</h1>
+     <ul id="song-list">
+       <!-- Song items will be dynamically added here -->
+     </ul>
+     <div class="audio-controls">
+       <h2 id="current-song" ></h2>
+       <div>
+         <span id="current-song-position">0:00</span> / <span id="total-song-duration">0:00</span>
+       </div>
+        <div>
+           <input type="range" id="seek-bar" min="1" max="1000" value="-1">
+        </div>
+     <div class="row">
+     <button id="play-button">
+       <img src="../assets/audio-control-icons/play-solid.svg" alt="Play" class="icon"/>
+      </button>
+     <button id="pause-button">
+       <img src="../assets/audio-control-icons/pause-solid.svg" alt="Pause" class="icon"/>
+     </button>
+     <button id="stop-button">
+       <img src="../assets/audio-control-icons/stop-solid.svg" alt="Stop" class="icon"/>
+     </button>
+     <button id="next-button">
+       <img src="../assets/audio-control-icons/forward-solid.svg" alt="Next" class="icon"/>
+     </button>
+     <button id="previous-button">
+       <img src="../assets/audio-control-icons/backward-solid.svg" alt="Previous" class="icon"/>
+     </button>
+     </div>
+     </div>
+
+   </main>
+       
+    </div>
+  </body>
+</html>
