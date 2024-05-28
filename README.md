@@ -1,3 +1,3 @@
-#This is my diploma project for my bcse/n
-#A music player app using tauri and Rust/n
-#Still very half baked, playback works though
+This is my diploma project for my bcse
+A music player app using tauri and Rust
+Still very half baked, playback works though
