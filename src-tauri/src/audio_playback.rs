@@ -25,6 +25,7 @@ pub enum AudioControl {
     Next,
     Previous,
     Seek(Duration),
+    Reinitialize(Vec<PathBuf>),
 }
 
 impl AudioPlayer {
@@ -62,7 +63,7 @@ impl AudioPlayer {
                             *total_duration_clone.lock().unwrap() = source.total_duration().unwrap();
                             sink.append(source);
                             *start_time_clone.lock().unwrap()= Some(Instant::now());
-                        } 
+                        }else{sink.stop();} 
                     }else{
                       if sink.is_paused(){
                         *start_time_clone.lock().unwrap()= Some(Instant::now());
@@ -114,7 +115,7 @@ impl AudioPlayer {
                             sink.play();
                             *start_time_clone.lock().unwrap()= Some(Instant::now());
                             *elapsed_time_clone.lock().unwrap() = Duration::from_secs(0);
-                        }
+                        }else{sink.stop();}
                     },
                     AudioControl::Previous => {
                         let mut index = current_index_clone.lock().unwrap();
@@ -134,12 +135,25 @@ impl AudioPlayer {
                             sink.play();
                             *start_time_clone.lock().unwrap() = Some(Instant::now());
                             *elapsed_time_clone.lock().unwrap() = Duration::from_secs(0);
-                        }
+                        }else{sink.stop();}
                     },
                     AudioControl::Seek(duration) =>{
                          sink.try_seek(duration).unwrap();
                          *elapsed_time_clone.lock().unwrap() = duration;
                          
+                    }
+                    AudioControl::Reinitialize(new_songs) => {
+                        sink.stop();
+                        *start_time_clone.lock().unwrap() = Some(Instant::now());
+                        *elapsed_time_clone.lock().unwrap() = Duration::from_secs(0);
+                        *music_files_clone.lock().unwrap() = new_songs.clone();
+                        *current_index_clone.lock().unwrap() = 0;
+                        if !new_songs.is_empty() {
+                            let file_path = &new_songs[0];
+                            let file = File::open(file_path).unwrap();
+                            let source = Decoder::new(BufReader::new(file)).unwrap();
+                            sink.append(source);
+                        }else{sink.stop();}
                     }
                 }
             }

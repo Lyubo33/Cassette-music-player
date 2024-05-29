@@ -89,6 +89,7 @@ async function displayPlaylists() {
 
 // Load playlist
 async function loadPlaylist(playlist) {
+  await playPlaylist(playlist.title);
   const songList = document.getElementById('song-list');
   songList.innerHTML = '';  // Clear previous song list
   playlist.songs.forEach(song => {
@@ -98,7 +99,12 @@ async function loadPlaylist(playlist) {
     li.textContent = song_name;
     li.onclick = () => playFile(song);
     songList.appendChild(li);
+    
   });
+}
+async function playPlaylist(title) {
+   await invoke('play_playlist',{title});
+   startUpdatingSongDetails();
 }
 
 // Initial display of playlists
@@ -234,10 +240,14 @@ document.getElementById('seek-bar').addEventListener('input', async (event) => {
     resetSongDetails();
     await startUpdatingSongDetails(); // Update the displayed position immediately
 });
+async function getAllSongs() {
+    await  fetchSongs();
+    await invoke('play_all_songs');  
+}
 
 document.getElementById('play-button').addEventListener('click', Play);
 document.getElementById('pause-button').addEventListener('click', Pause);
 document.getElementById('stop-button').addEventListener('click', Stop);
 document.getElementById('next-button').addEventListener('click', Next);
 document.getElementById('previous-button').addEventListener('click', Previous);
-document.getElementById('all-songs').addEventListener('click', fetchSongs);
+document.getElementById('all-songs').addEventListener('click', getAllSongs);

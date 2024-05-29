@@ -64,9 +64,9 @@ fn previous(state: State<'_, AppState>) {
 
 #[tauri::command]
 fn get_songs(state: State<'_, AppState>) -> Vec<PathBuf> {
-    let files = state.music_files.clone();
+    let files = state.active_songs.lock().unwrap().clone();
     if files.is_empty(){
-        eprintln!("No files foend in default directory");
+        eprintln!("No files found in default directory");
     }
     files
 }
@@ -127,11 +127,8 @@ fn delete_playlist(state: State<'_, AppState>, title: String) -> Result<(), Stri
 fn play_playlist(state: State<'_, AppState>, title: String) -> Result<(), String> {
     let playlists = state.playlists.lock().unwrap();
     if let Some(playlist) = playlists.iter().find(|p| p.title == title) {
-        let mut active_songs = state.active_songs.lock().unwrap();
-        let mut current_index = state.current_index.lock().unwrap();
-        *active_songs = playlist.songs.clone();
-        *current_index = 0;
-        state.player.send_control(AudioControl::PlayFile(active_songs[0].clone())).unwrap();
+        let new_songs = playlist.songs.clone();
+        state.player.send_control(AudioControl::Reinitialize(new_songs)).unwrap();
         Ok(())
     } else {
         Err("Playlist not found".to_string())
@@ -140,11 +137,8 @@ fn play_playlist(state: State<'_, AppState>, title: String) -> Result<(), String
 
 #[tauri::command]
 fn play_all_songs(state: State<'_, AppState>) {
-    let mut active_songs = state.active_songs.lock().unwrap();
-    let mut current_index = state.current_index.lock().unwrap();
-    *active_songs = state.music_files.clone();
-    *current_index = 0;
-    state.player.send_control(AudioControl::PlayFile(active_songs[0].clone())).unwrap();
+    let music_files = state.music_files.clone();
+    state.player.send_control(AudioControl::Reinitialize(music_files)).unwrap();
 }
 
 // Function to save playlists to a file
