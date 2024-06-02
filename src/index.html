@@ -13,28 +13,53 @@
       <aside class="sidebar">
         <h1>Sidebar</h1>
         <input class="search-box" type="text" placeholder="Search for playlist or song">
-          <button id="all-songs">All songs</button>
-          <button class="playlist-create">Create a new cassette</button>
+          <button id="all-songs"><img src="assets\misc-icons\list-solid.svg" alt="All songs"/> 
+              <span class="sidebar-button-text">All songs</span>
+           </button>
+          <button class="playlist-create"><img src="assets\misc-icons\plus-solid.svg" alt= "Cerate a new playlist"/>
+            <span class="sidebar-button-text">Create a new playlist</span>
+           </button>
+          <button id="choose-directory-sidebar"><img src="assets\misc-icons\folder-solid.svg" alt= "Choose directory"/>
+            <span class="sidebar-button-text">Choose directory</span>
+           </button>
           <ul id="playlists"> 
             <!-- Playlists will be added here -->
           </ul>
+
           <div id="playlist-modal" class="modal">
             <div class="modal-content">
               <span class="close" id="close-modal">&times;</span>
               <h2>Create Playlist</h2>
-              <input type="text" id="playlist-title" placeholder="Playlist Title" />
+              <input type="text" id="playlist-title" placeholder="Playlist Title " required />
               <ul id="song-selection">
                 <!-- Songs will be listed here for selection -->
               </ul>
               <button id="create-playlist-btn">Create Playlist</button>
             </div>
-          </div>          
+          </div>  
+            <!--Modal for editing playlist -->
+          <div id="edit-modal" class="modal">
+            <div class="modal-content">
+              <span id="edit-modal-close" class="close">&times;</span>
+              <h2>Edit Playlist</h2>
+              <input type="text" id="edit-playlist-title" placeholder="Playlist Title">
+              <ul id="edit-song-selection"></ul>
+              <button id="update-playlist-btn">Update Playlist</button>
+            </div>
+          </div>
      </aside>
+  <!--Main window -->
    <main class="main">
-     <h1>Home</h1>
+     <h1 id = "main-title">All songs</h1>
+    <div id="initial-prompt">
+      <p>Please choose a music directory to get started.</p>
+      <button id="choose-directory-main">Choose Directory</button>
+    </div>
+
      <ul id="song-list">
        <!-- Song items will be dynamically added here -->
      </ul>
+  <!--Audio controls and current song title block -->
      <div class="audio-controls">
        <h2 id="current-song" ></h2>
        <div>
@@ -61,9 +86,9 @@
      </button>
      </div>
      </div>
-
+     
    </main>
-       
+
     </div>
   </body>
 </html>

@@ -5,6 +5,7 @@ use std::error::Error;
 // Define supported music file extensions
 const MUSIC_EXTENSIONS: &[&str] = &["mp3", "wav"];
 
+
 fn is_music_file(path: &PathBuf) -> bool {
     if let Some(ext) = path.extension() {
         if let Some(ext_str) = ext.to_str() {

@@ -143,17 +143,11 @@ impl AudioPlayer {
                          
                     }
                     AudioControl::Reinitialize(new_songs) => {
-                        sink.stop();
                         *start_time_clone.lock().unwrap() = Some(Instant::now());
                         *elapsed_time_clone.lock().unwrap() = Duration::from_secs(0);
                         *music_files_clone.lock().unwrap() = new_songs.clone();
                         *current_index_clone.lock().unwrap() = 0;
-                        if !new_songs.is_empty() {
-                            let file_path = &new_songs[0];
-                            let file = File::open(file_path).unwrap();
-                            let source = Decoder::new(BufReader::new(file)).unwrap();
-                            sink.append(source);
-                        }else{sink.stop();}
+             
                     }
                 }
             }

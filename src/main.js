@@ -1,5 +1,6 @@
 const { invoke } = window.__TAURI__.tauri;
 
+let currently_edited_playlist = null;
 
 async function fetchSongs() {
   const response = await invoke('get_songs');
@@ -17,6 +18,11 @@ async function createPlaylist(title, songs) {
 
 async function deletePlaylist(title) {
   await invoke('delete_playlist', { title });
+}
+
+async function updatePlaylist(oldTitle, newTitle, songs) {
+  console.log("Calling updatePlaylist with:", { oldTitle, newTitle, songs });
+  await invoke('update_playlist', { oldTitle, newTitle, songs });
 }
 
 fetchSongs().then(fetchedSongs => {
@@ -51,7 +57,7 @@ document.querySelector('.playlist-create').addEventListener('click', () => {
   });
 });
 
-// Close modal
+// Close modal for playlist creation
 document.getElementById('close-modal').addEventListener('click', () => {
   document.getElementById('playlist-modal').style.display = 'none';
 });
@@ -66,6 +72,52 @@ document.getElementById('create-playlist-btn').addEventListener('click', async (
   displayPlaylists();
 });
 
+//Edit playlist modal functionality
+async function openEditModal(playlist) {
+  const editModal = document.getElementById('edit-modal');
+  editModal.style.display = 'block';
+  currently_edited_playlist = playlist;
+  const editTitleInput = document.getElementById('edit-playlist-title');
+  editTitleInput.value = playlist.title;
+
+  const editSongSelection = document.getElementById('edit-song-selection');
+  editSongSelection.innerHTML = ''; // Clear previous song list
+  const fetchedSongs = await fetchSongs();
+  fetchedSongs.forEach(song => {
+    const li = document.createElement('li');
+    li.textContent = song.replace(/^.*[\\\/]/, '');
+    li.dataset.path = song;
+    li.classList.add('selectable-song');
+    if (playlist.songs.includes(song)) {
+      li.classList.add('selected');
+    }
+    li.onclick = () => li.classList.toggle('selected');
+    editSongSelection.appendChild(li);
+  });
+}
+
+// Close edit modal
+document.getElementById('edit-modal-close').addEventListener('click', () => {
+  document.getElementById('edit-modal').style.display = 'none';
+});
+
+document.getElementById('update-playlist-btn').addEventListener('click', async () => {
+  const editTitleInput = document.getElementById('edit-playlist-title');
+  const oldTitle = currently_edited_playlist.title;
+  const newTitle = editTitleInput.value;
+  const selectedSongs = Array.from(document.querySelectorAll('#edit-song-selection .selectable-song.selected'))
+                             .map(li => li.dataset.path);
+  try {
+    await updatePlaylist(oldTitle, newTitle, selectedSongs);
+    document.getElementById('edit-modal').style.display = 'none';
+    displayPlaylists();
+  } catch (error) {
+    console.error('Error updating playlist:', error);
+  }
+});
+
+
+
 // Display playlists
 async function displayPlaylists() {
   const playlists = await fetchPlaylists();
@@ -76,13 +128,43 @@ async function displayPlaylists() {
     li.textContent = playlist.title;
     li.onclick = () => loadPlaylist(playlist);
     const deleteBtn = document.createElement('button');
-    deleteBtn.textContent = 'Delete';
+    const deleteIcn = document.createElement('img');
+    const editBtn = document.createElement('button');
+    const editIcn = document.createElement('img');
+    deleteIcn.id = 'del-icn';
+    editIcn.id = 'edit-icn';
+    deleteIcn.alt = 'Delete';
+    deleteIcn.src = 'assets/misc-icons/trash-solid.svg';
+    deleteIcn.style.width = '15px';
+    deleteIcn.style.height = '15px';
+
+    editIcn.alt = 'Edit';
+    editIcn.src = 'assets/misc-icons/pen-to-square-solid.svg';
+    editIcn.style.width = '15px';
+    editIcn.style.height = '15px';
+
+    deleteBtn.appendChild(deleteIcn);
+    editBtn.appendChild(editIcn);
+    li.style.listStyle='none';
+    deleteBtn.style.fontSize ='small';
+    deleteBtn.style.width = '60px';
+    deleteBtn.style.height = '40px';
+    editBtn.style.width = '60px';
+    editBtn.style.height = '40px';
+    deleteBtn.style.marginLeft = '15px';
+    editBtn.style.margingLeft = '15px';
+    deleteBtn.style.textAlign = 'center';
     deleteBtn.onclick = async (e) => {
       e.stopPropagation();
       await deletePlaylist(playlist.title);
       displayPlaylists();
     };
+    editBtn.onclick = async (e) => {
+      e.stopPropagation();
+      await openEditModal(playlist);
+    };
     li.appendChild(deleteBtn);
+    li.appendChild(editBtn);
     playlistList.appendChild(li);
   });
 }
@@ -104,6 +186,7 @@ async function loadPlaylist(playlist) {
 }
 async function playPlaylist(title) {
    await invoke('play_playlist',{title});
+   document.getElementById('main-title').textContent = title;
    startUpdatingSongDetails();
 }
 
@@ -241,9 +324,70 @@ document.getElementById('seek-bar').addEventListener('input', async (event) => {
     await startUpdatingSongDetails(); // Update the displayed position immediately
 });
 async function getAllSongs() {
-    await  fetchSongs();
-    await invoke('play_all_songs');  
+    await invoke('play_all_songs');
+    await fetchSongs();  
+    const songList = document.getElementById('song-list');
+    document.getElementById('main-title').textContent = 'All songs';
+    fetchSongs().then(fetchedSongs => {
+      songList.innerHTML = ''; // Clear previous songs
+      fetchedSongs.forEach(song => {
+        const li = document.createElement('li');
+        let song_name = song.replace(/^.*[\\\/]/, '');
+        li.className = "song-item";
+        li.textContent = song_name;
+        li.onclick = () => playFile(song);
+        songList.appendChild(li);
+      });
+    });
+    
 }
+
+async function chooseDirectory() {
+  const newDirectory = await invoke('select_directory');
+  if (newDirectory) {
+    await updateUIAfterDirectorySelection();
+  }
+}
+document.addEventListener('DOMContentLoaded', async () => {
+async function checkDirectory(){ 
+  try {
+    const musicDirectory = await invoke('get_music_directory');
+    const songList = document.getElementById('song-list');
+    const initialPrompt = document.getElementById('initial-prompt');
+    if (musicDirectory) {
+      initialPrompt.style.display = 'none';
+    } else {
+      initialPrompt.style.display = 'block';
+      songList.style.display = 'none';
+    }
+  } catch (error) {
+    console.error('Error fetching music directory:', error);
+  }
+}
+await checkDirectory();
+});
+
+async function updateUIAfterDirectorySelection() {
+  const songList = document.getElementById('song-list');
+
+  // Hide the initial prompt and show the song list
+  document.getElementById('initial-prompt').style.display = 'none';
+
+  // Fetch and display songs
+  fetchSongs().then(fetchedSongs => {
+    songList.innerHTML = ''; // Clear previous songs
+    fetchedSongs.forEach(song => {
+      const li = document.createElement('li');
+      let song_name = song.replace(/^.*[\\\/]/, '');
+      li.className = "song-item";
+      li.textContent = song_name;
+      li.onclick = () => playFile(song);
+      songList.appendChild(li);
+    });
+  });
+}
+
+
 
 document.getElementById('play-button').addEventListener('click', Play);
 document.getElementById('pause-button').addEventListener('click', Pause);
@@ -251,3 +395,5 @@ document.getElementById('stop-button').addEventListener('click', Stop);
 document.getElementById('next-button').addEventListener('click', Next);
 document.getElementById('previous-button').addEventListener('click', Previous);
 document.getElementById('all-songs').addEventListener('click', getAllSongs);
+document.getElementById('choose-directory-main').addEventListener('click', chooseDirectory);
+document.getElementById('choose-directory-sidebar').addEventListener('click', chooseDirectory);

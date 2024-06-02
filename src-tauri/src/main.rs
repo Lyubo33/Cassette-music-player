@@ -8,6 +8,8 @@ mod file_management;
 
 use audio_playback::{AudioControl, AudioPlayer};
 use file_management::scan_directory_for_music;
+use tauri::api::dialog::FileDialogBuilder;
+use std::error::Error;
 use std::path::PathBuf;
 use std::time::Duration;
 use tauri::State;
@@ -18,16 +20,21 @@ use std::sync::Mutex;
 
 
 const PLAYLISTS_FILE: &str = "playlists.json";
-
+const CONFIG_FILE: &str = "config.json";
 #[derive(Clone, serde::Serialize, serde::Deserialize)]
 struct Playlist{
      title: String,
      songs: Vec<PathBuf>,
 }
 
+#[derive(serde::Serialize, serde::Deserialize)]
+struct AppConfig {
+    music_directory: String,
+}
+
 struct AppState {
     player: AudioPlayer,
-    music_files: Vec<PathBuf>,
+    music_files: Mutex<Vec<PathBuf>>,
     playlists:Mutex<Vec<Playlist>>,
     active_songs: Mutex<Vec<PathBuf>>,
     current_index: Mutex<usize>,
@@ -118,6 +125,7 @@ fn get_playlists(state: State<'_, AppState>) -> Vec<Playlist> {
 
 #[tauri::command]
 fn delete_playlist(state: State<'_, AppState>, title: String) -> Result<(), String> {
+    state.player.send_control(AudioControl::Stop).unwrap();
     let mut playlists = state.playlists.lock().unwrap();
     playlists.retain(|p| p.title != title);
     save_playlists_to_file(&playlists).map_err(|e| e.to_string())
@@ -128,6 +136,7 @@ fn play_playlist(state: State<'_, AppState>, title: String) -> Result<(), String
     let playlists = state.playlists.lock().unwrap();
     if let Some(playlist) = playlists.iter().find(|p| p.title == title) {
         let new_songs = playlist.songs.clone();
+        state.player.send_control(AudioControl::Stop).unwrap();
         state.player.send_control(AudioControl::Reinitialize(new_songs)).unwrap();
         Ok(())
     } else {
@@ -136,8 +145,86 @@ fn play_playlist(state: State<'_, AppState>, title: String) -> Result<(), String
 }
 
 #[tauri::command]
+fn update_playlist(state: State<'_, AppState>, old_title: String, new_title: String, songs: Vec<String>) -> Result<(), String> {
+    let songs: Vec<PathBuf> = songs.into_iter().map(PathBuf::from).collect();
+    let mut playlists = state.playlists.lock().unwrap();
+    
+    if let Some(playlist) = playlists.iter_mut().find(|p| p.title == old_title) {
+        playlist.title = new_title;
+        playlist.songs = songs;
+        println!("Playlist updated to file");
+        save_playlists_to_file(&playlists).map_err(|e| e.to_string())
+       
+    } else {
+        Err("Playlist not found".to_string())
+    }
+}
+
+#[tauri::command]
+fn set_music_directory(state: State<'_, AppState>, dir_path: String) -> Result<(), String> {
+    let music_files = match scan_directory_for_music(&dir_path) {
+        Ok(files) => files,
+        Err(e) => return Err(e.to_string()),
+    };
+    state.player.send_control(AudioControl::Stop).unwrap();
+    state.player.send_control(AudioControl::Reinitialize(music_files.clone())).unwrap();
+    *state.music_files.lock().unwrap() = music_files.clone();
+    *state.active_songs.lock().unwrap() = music_files.clone();
+
+    let config = AppConfig {
+        music_directory: dir_path.clone(),
+    };
+    save_config_to_file(&config).map_err(|e| e.to_string())
+}
+
+#[tauri::command]
+fn get_music_directory() -> Result<String, String> {
+    let config = load_config_from_file().map_err(|e| e.to_string())?;
+    Ok(config.music_directory)
+}
+#[tauri::command]
+async fn select_directory(state: State<'_, AppState>) -> Result<(), String> {
+    let (sender, receiver) = std::sync::mpsc::channel();
+    FileDialogBuilder::new()
+        .pick_folder(move |path_buf| {
+            sender.send(path_buf).unwrap();
+        });
+
+    if let Some(path_buf) = receiver.recv().unwrap() {
+        let dir_path = path_buf.to_string_lossy().to_string();
+        set_music_directory(state, dir_path)?
+    } else {
+        return Err("No directory selected".to_string());
+    }
+    Ok(())
+}
+
+// Function to save configuration to a file
+fn save_config_to_file(config: &AppConfig) -> io::Result<()> {
+    let file = File::create(CONFIG_FILE)?;
+    let writer = BufWriter::new(file);
+    serde_json::to_writer(writer, config)?;
+    Ok(())
+}
+
+// Function to load configuration from a file
+fn load_config_from_file() -> io::Result<AppConfig> {
+    if Path::new(CONFIG_FILE).exists() {
+        let file = File::open(CONFIG_FILE)?;
+        let reader = BufReader::new(file);
+        let config = serde_json::from_reader(reader)?;
+        Ok(config)
+    } else {
+        Ok(AppConfig {
+            music_directory: String::new(),
+        })
+    }
+}
+
+#[tauri::command]
 fn play_all_songs(state: State<'_, AppState>) {
-    let music_files = state.music_files.clone();
+    let music_files = state.music_files.lock().unwrap().clone();
+    state.player.send_control(AudioControl::Stop).unwrap();
     state.player.send_control(AudioControl::Reinitialize(music_files)).unwrap();
 }
 
@@ -162,50 +249,23 @@ fn load_playlists_from_file() -> io::Result<Vec<Playlist>> {
 }
 
 
-fn main() {
-    let dir_path = if cfg!(target_os = "windows") {
-        "C:\\Users\\Public\\Music"
-    } else if cfg!(target_os = "linux") {
-        "/usr/share/music"
-    } else if cfg!(target_os = "android") {
-        "/storage/emulated/0/Music"
+fn main()-> Result<(), Box<dyn Error>> {
+    let config = load_config_from_file()?;
+
+    let music_files = if !config.music_directory.is_empty() {
+        scan_directory_for_music(&config.music_directory)?
     } else {
-        ""
+        vec![]
     };
 
-    if dir_path.is_empty() {
-        eprintln!("Unsupported platform.");
-        return;
-    }
-    let music_files = match scan_directory_for_music(dir_path) {
-        Ok(files) => {
-                files
-        },
-        Err(_) => {
-            eprintln!("Error reading files.");
-            return;
-        }
-    };
     let active_songs = Mutex::new(music_files.clone());
-    let audio_player = match AudioPlayer::new(active_songs.lock().unwrap().clone()) {
-        Ok(player) => player,
-        Err(_) => {
-            eprintln!("Failed to create audio player.");
-            return;
-        }
-    };
-    let playlists = match load_playlists_from_file() {
-        Ok(playlists) => playlists,
-        Err(_) => {
-            eprintln!("Failed to load playlists.");
-            Vec::new()
-        }
-    };
+    let audio_player = AudioPlayer::new(active_songs.lock().unwrap().clone())?;
+    let playlists = load_playlists_from_file()?;
 
     tauri::Builder::default()
     .manage(AppState {
         player: audio_player,
-        music_files: music_files.clone(),
+        music_files:  Mutex::new(music_files.clone()),
         playlists: Mutex::new(playlists),
         active_songs: active_songs,  // Start with all songs as the active list
         current_index: Mutex::new(0),
@@ -228,7 +288,11 @@ fn main() {
             delete_playlist,
             play_playlist,
             play_all_songs,
+            set_music_directory,
+            get_music_directory,
+            select_directory,
+            update_playlist,
         ])
-        .run(tauri::generate_context!())
-        .expect("error while running tauri application");
+        .run(tauri::generate_context!())?;
+        Ok(())
 }
