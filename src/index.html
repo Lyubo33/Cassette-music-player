@@ -11,21 +11,28 @@
   <body>
     <div class="container"> 
       <aside class="sidebar">
-        <h1>Sidebar</h1>
-        <input class="search-box" type="text" placeholder="Search for playlist or song">
+         <div class ="search-div">
+          <input id="search-box" class="search-box" type="text" placeholder="Search for a song">
+          <ul id="search-results" class="search-results"></ul>
+         </div>
+         <div class="sidebar-buttons">
           <button id="all-songs"><img src="assets\misc-icons\list-solid.svg" alt="All songs"/> 
-              <span class="sidebar-button-text">All songs</span>
-           </button>
-          <button class="playlist-create"><img src="assets\misc-icons\plus-solid.svg" alt= "Cerate a new playlist"/>
-            <span class="sidebar-button-text">Create a new playlist</span>
-           </button>
-          <button id="choose-directory-sidebar"><img src="assets\misc-icons\folder-solid.svg" alt= "Choose directory"/>
-            <span class="sidebar-button-text">Choose directory</span>
-           </button>
+            <span class="sidebar-button-text">All songs</span>
+         </button>
+        <button class="playlist-create"><img src="assets\misc-icons\plus-solid.svg" alt= "Cerate a new playlist"/>
+          <span class="sidebar-button-text">Create a new playlist</span>
+         </button>
+        <button id="choose-directory-sidebar"><img src="assets\misc-icons\folder-solid.svg" alt= "Choose directory"/>
+          <span class="sidebar-button-text">Choose directory</span>
+         </button>
+         </div>
+         <button class="playlist-button" id="playlistToggle">Playlists</button>
+         <div class="playlist-div" id="playlistDropdown">
+          <h4 style="text-align: center; margin-bottom: 0;">Playlists</h4>
           <ul id="playlists"> 
             <!-- Playlists will be added here -->
           </ul>
-
+         </div>
           <div id="playlist-modal" class="modal">
             <div class="modal-content">
               <span class="close" id="close-modal">&times;</span>
@@ -34,6 +41,7 @@
               <ul id="song-selection">
                 <!-- Songs will be listed here for selection -->
               </ul>
+              <div id="create-modal-errors" class="modal-errors"></div>
               <button id="create-playlist-btn">Create Playlist</button>
             </div>
           </div>  
@@ -44,6 +52,7 @@
               <h2>Edit Playlist</h2>
               <input type="text" id="edit-playlist-title" placeholder="Playlist Title">
               <ul id="edit-song-selection"></ul>
+              <div id="edit-modal-errors" class="modal-errors"></div>
               <button id="update-playlist-btn">Update Playlist</button>
             </div>
           </div>
@@ -60,7 +69,7 @@
        <!-- Song items will be dynamically added here -->
      </ul>
   <!--Audio controls and current song title block -->
-     <div class="audio-controls">
+     <div id="audio-control-div" class="audio-controls">
        <h2 id="current-song" ></h2>
        <div>
          <span id="current-song-position">0:00</span> / <span id="total-song-duration">0:00</span>

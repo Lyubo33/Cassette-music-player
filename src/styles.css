@@ -3,19 +3,40 @@
   font-size: 16px;
   line-height: 24px;
   font-weight: 400;
-
   color: #282828;
-  background-color: beige;
-
   font-synthesis: none;
   text-rendering: optimizeLegibility;
+  transition: .5s ease-in-out;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   -webkit-text-size-adjust: 100%;
+
 }
+
+@keyframes gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.animated-gradient {
+  background: linear-gradient(270deg, beige, #decfac, antiquewhite, beige);
+  background-size: 800% 800%;
+  animation: gradient 10s linear infinite;
+}
+
+
+
 
 .body{
    min-height: 100vh;
+ 
 }
 .container{
    display: flex;
@@ -52,24 +73,18 @@
   background-color: antiquewhite;
   border-bottom-left-radius: 15px;
 }
-.sidebar button img{
+.sidebar-buttons img{
    width:15px;
    height:15px;
    align-self: center;
    transition: .5s cubic-bezier(0.6, 0.04, 0.98, 0.335);
 }
-.sidebar button .sidebar-button-text{ 
+.sidebar-button-text{ 
   display:none;
   transition: .5s;
 }
-#choose-directory-sidebar:hover img{
-   align-self: right;
-}
-#all-songs:hover img{
-   align-self: right;
-}
-.playlist-create:hover img{
-   transition: 0.9s;
+.sidebar-buttons img{
+  align-self: right;
 }
 .sidebar button:hover .sidebar-button-text{
    display: block;
@@ -91,12 +106,14 @@ input[type='text']:hover{
   border:1px solid antiquewhite;
   background-color: antiquewhite;
   border-bottom-left-radius: 15px;
+  height:35px;
 }
 input[type='text']:active{
   color:#282828;
   border:1px solid antiquewhite;
   background-color: antiquewhite;
   border-bottom-left-radius: 15px;
+  
 }
 
 .main {
@@ -105,6 +122,10 @@ input[type='text']:active{
   flex-direction: column;
   justify-content: center;
   text-align: center;
+}
+#main-title:hover{
+  transition: .15s ease;
+   text-shadow: 0px 7px 8px #282828;
 }
 .audio-controls{
   text-align: center;
@@ -126,6 +147,11 @@ input[type='text']:active{
   margin-left: 15%;
   margin-right:15%;
   transition: .13s;
+  background-image: url('assets/images/Casette-Background.png');
+  background-size:cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-blend-mode:hard-light;
 }
 #song-list:hover{ 
   box-shadow: 0px 7px 8px 3px #282828cc;
@@ -144,9 +170,11 @@ input[type='text']:active{
   font-size: large;
   font-weight: lighter;
 }
-.song-item:hover{
-   color:crimson;
-   font-weight: bold;
+.song-item:hover, .song-item:focus, .song-item:active{
+   background: linear-gradient(to top,#282828,#f86161, crimson);
+   background-clip: text;
+   color: transparent;
+   border-radius: 8px;
 
 }
 #current-song h2{
@@ -165,40 +193,56 @@ input[type='text']:active{
     cursor: pointer;
     height: 6px;
     background: #282828;
+    border-radius: 15px;
+    transition: .15s cubic-bezier(0.19, 1, 0.22, 1);
+    top:5px;
+    box-shadow: none;
+}
+#seek-bar:hover{
+   border-radius:20px;
+   box-shadow: 0px 3px 4px 3px #28282899;
+   top:0;
+  
 }
 
 input[type="range"]::-moz-range-thumb{
-  height: 16px;
-  width: 16px;
+  height: 20px;
+  width: 20px;
   background-color: beige;
   border-radius: 50%;
-  border: 1px solid #282828;
   transition: .2s ease-in-out;
+  background-image: url('assets/audio-control-icons/cassette-svgrepo-mono.svg');
+  background-size:contain;
+  background-repeat: no-repeat;
+  background-position: center center;
+
 }
 input[type="range"]::-webkit-slider-thumb{
   -webkit-appearance: none;
   appearance: none;
-  height: 16px;
-  width: 16px;
-  background-color:beige;
-  border-radius: 50%;
-  border: 1px solid #282828;
+  height: 20px;
+  width: 20px;
+  background-color: beige;
   transition: .2s ease-in-out;
+  background-image: url('assets/audio-control-icons/cassette-svgrepo-mono.svg');
+  background-size:contain;
+  background-repeat: no-repeat;
+  background-position: center center;
 }
 
 
 input[type="range"]:active::-webkit-slider-thumb {
-  box-shadow: 0 0 0 2px crimson;
+  transform: rotate(360deg);
 }
 input[type="range"]:focus::-webkit-slider-thumb {
-  box-shadow: 0 0 0 2px crimson;
+  transform: rotate(360deg);
 }
 
 input[type="range"]:active::-moz-range-thumb {
-  box-shadow: 0 0 0 2px crimson;
+  transform: rotate(360deg);
 }
 input[type="range"]:focus::-moz-range-thumb {
-  box-shadow: 0 0 0 2dvb crimson;   
+  transform: rotate(360deg); 
 }
 
 .row {
@@ -245,7 +289,6 @@ a:hover {
 h1 {
   text-align: center;
 }
-
 button {
   border-radius: 8px;
   border: 2px solid transparent;
@@ -284,56 +327,108 @@ button {
     background-color: beige;
   }
 @media only screen and (max-width: 992px){
+  :root{
+    font-size: 13px;
+    line-height: 14px;
+    font-weight: 200;
+  }
   .container{
      flex-direction: column;
   }
-  .sidebar{
-     height: 150px;
+  .sidebar {
+    height: auto; /* Remove fixed height */
+    flex-direction: column; /* Change direction to stack items vertically */
+    align-items: center; /* Center items horizontally */
+  }
+  .sidebar .sidebar-buttons{
      flex-direction: row;
-     margin: 3px;
-     font-size: smaller;
+     align-items: center;
+     max-height: 150px;
+     max-width:40%;
+     
   }
-  .sidebar h1{
+  .search-div{
      align-self: center;
+     max-width: 20%;
   }
-  .sidebar button{ 
-    align-self:center;
+  .search-box:hover{ 
+    width:150px;
+  }
+  .sidebar .playlist-button {
+    width: 50%;
+    background-color: beige;
+    color: #282828;
+    border-radius: 30px;
+    text-shadow: 0px 7px 8px #282828;
     transition: .5s;
+    font-weight: bold;
+    display: block; /* Ensure the button is visible */
+    margin-bottom: 10px; /* Space below the button */
   }
-  input[type='text']{ 
-    max-width: 250px;
-    max-height: 100px;
-    align-self: center;
-    padding-right: 20px;
+
+  .sidebar .playlist-div {
+    width: 50%;
+    background-color: #282828;
+    border-radius: 10px;
+    box-shadow: 0px 7px 8px 3px #282828cc;
+    z-index: 1;
+    position: relative;
+    bottom: 0; /* Adjust this value based on your design */
+    left: 0;
   }
+
+  .playlist-div h4 {
+    display: none; /* Hide the heading when in dropdown mode */
+  }
+ 
   .audio-controls{
      border-radius: 15px;
      align-self: center;
      margin-top: 25px;
   }
-  #playlists{ 
-    display:hide;
-  }
 }
- #playlists li{ 
+.sidebar .playlist-div{
+   display: flex;
+   flex-direction: column;
+   transition: .5s cubic-bezier(0.165, 0.84, 0.44, 1) ease-in-out;
+}
+.search-div{ 
+  display: flex;
+  flex-direction: column;
+  align-self: center;
+}
+.sidebar-buttons{
+  display: flex;
+  flex-direction: column;
+ }
+ #playlists #playlist-item{ 
   border-radius:30px;
   text-align: left;
   transition: .5s cubic-bezier(0.19, 1, 0.22, 1);
   right:0px;
   font-weight: lighter;
   list-style-position: inside;
-  margin: 5px;
+  margin: 4px;
   align-self: center;
+  flex-wrap: nowrap;
  }
- #playlists li:hover{ 
-    text-align: right;
+ #playlists #playlist-item button{
+   margin-right: 2px;
+   transform: scale(0);
+   transition: .5s cubic-bezier(0.19, 1, 0.22, 1);
+ }
+ #playlists #playlist-item:hover{ 
+    text-align: center;
     border-bottom-left-radius: 15px;
     cursor:pointer;
     background-color: beige;
     color:#282828;
     font-weight: bold;
  }
- #playlists button:hover #del-icn, .sidebar button:hover img{
+ #playlists #playlist-item:hover button{
+   transform:scale(1);
+ }
+ #playlists button:hover #del-icn{
   transition: .5s linear;
   filter: invert(22%) sepia(72%) saturate(2758%) hue-rotate(340deg) brightness(88%) contrast(94%);
   transform:skewY(2px);
@@ -343,6 +438,11 @@ button {
   filter: invert(22%) sepia(90%) saturate(2758%) hue-rotate(180deg) brightness(100%) contrast(100%);
  }
  
+ .modal-errors {
+  color: red;
+  margin-top: 10px;
+}
+
   a:hover {
     color: #24c8db;
   }
@@ -370,7 +470,7 @@ button {
 }
 
 .modal-content {
-  background-color: beige;
+  background: linear-gradient(to right top,beige, #decfac);
   margin: 15% auto;
   padding: 20px;
   color:#282828;
@@ -393,42 +493,101 @@ button {
   color: crimson;
   text-decoration: none;
   cursor: pointer;
-  transform:rotateY('20');
+  transform:rotateY(20deg);
 }
 
 /* Selectable song list */
 .selectable-song {
   cursor: pointer;
   transition: .5s;
+  list-style: none;
+  color:#282828;
+  margin:3px;
 }
 
 .selectable-song.selected {
-  background-color: crimson;
+  background: linear-gradient(to top, #f86161, crimson);
+  color:antiquewhite;
+  border-radius: 8px;
+  box-shadow: 0px 4px 3px #f86161;
+}
+::-webkit-scrollbar{ 
+  width:12px;
+  height:12px;
+}
+::-webkit-scrollbar-thumb{
+   background-color: #282828;
+   border-radius: 10px;
+   border:3px solid beige;
+   transition: .5s;
+   cursor: pointer;
+}
+::-webkit-scrollbar-track{
+   background:linear-gradient(to right top, beige,#decfac);
+   border-radius: 10px;
+}
+#initial-prompt { 
+  align-self: center;
+  margin: 100px;
+  font-weight: bold;
+}
+#choose-directory-main{
+  text-align: center;
+  margin: 10px;
+  background-color: #282828;
   color:beige;
-  border-radius: 15px;
+  border-radius: 30px;
+  text-shadow: 0px 7px 8px #282828;
+  transition: .5s;
+  flex-shrink: 1;
+  font-weight:bold;
 }
-/* Context Menu Styling */
-.context-menu {
-  display: none;
-  position: absolute;
-  z-index: 1000;
-  background: #282828;
-  border: 1px solid #282828;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+#choose-directory-main:hover{ 
+  background:linear-gradient(to right top, antiquewhite,#decfac);
+  color:#282828;
+  border-bottom-left-radius: 15px;
+  text-shadow:none;
+}
+/*Search box and results*/
+.search-div{
+   align-self: center;
+   flex-direction: column;
+   display: flex;
+}
+.search-box {
+  position: relative;
+  margin-bottom: 5px;
+  height:15px;
 }
 
-.context-menu ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
+.search-results {
+  position: relative;
+  top: 10px;
+  left: 0;
+  right: 0;
+  max-width: 200px;
+  overflow-y: auto;
+  background-color: beige;
+  border-radius: 30px;
+  z-index: 10;
+  align-self: center;
 }
 
-.context-menu ul li {
-  padding: 8px 12px;
+.search-results li {
   cursor: pointer;
+  list-style: none;
+  font-size: small;
+  color:#282828;
+  font-weight: bold;
+  transition: .15s;
+  border-radius: 7.5px;
+  text-align: left;
+  list-style-type:none;
+
 }
 
-.context-menu ul li:hover {
-  background-color: crimson;
+.search-results li:hover {
+  color: crimson;
+  border:none;
 }
 

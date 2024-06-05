@@ -152,7 +152,6 @@ fn update_playlist(state: State<'_, AppState>, old_title: String, new_title: Str
     if let Some(playlist) = playlists.iter_mut().find(|p| p.title == old_title) {
         playlist.title = new_title;
         playlist.songs = songs;
-        println!("Playlist updated to file");
         save_playlists_to_file(&playlists).map_err(|e| e.to_string())
        
     } else {
@@ -183,20 +182,22 @@ fn get_music_directory() -> Result<String, String> {
     Ok(config.music_directory)
 }
 #[tauri::command]
-async fn select_directory(state: State<'_, AppState>) -> Result<(), String> {
+async fn select_directory(state: State<'_, AppState>) -> Result<String, String> {
     let (sender, receiver) = std::sync::mpsc::channel();
     FileDialogBuilder::new()
         .pick_folder(move |path_buf| {
             sender.send(path_buf).unwrap();
         });
 
-    if let Some(path_buf) = receiver.recv().unwrap() {
+    let path_buf = receiver.recv().unwrap();
+
+    if let Some(path_buf) = path_buf {
         let dir_path = path_buf.to_string_lossy().to_string();
-        set_music_directory(state, dir_path)?
+        set_music_directory(state, dir_path.clone())?;
+        Ok(dir_path)
     } else {
-        return Err("No directory selected".to_string());
+        Err("No directory selected".to_string())
     }
-    Ok(())
 }
 
 // Function to save configuration to a file
