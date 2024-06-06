@@ -551,6 +551,7 @@ async function updateUIAfterDirectorySelection(newDirectory) {
     if (fetchedSongs.length > 0) {
       displaySongs(fetchedSongs);
       displayPlaylists();
+      Stop();
 
       // Update the UI visibility
       document.getElementById('initial-prompt').style.display = 'none';
@@ -560,6 +561,10 @@ async function updateUIAfterDirectorySelection(newDirectory) {
     } else {
       console.log("The selected directory doesn't contain any songs.");
       alert("The selected directory doesn't contain any songs.");
+      document.getElementById('initial-prompt').style.display = 'block';
+      document.querySelector('.sidebar').style.display = 'none';
+      document.getElementById('audio-control-div').style.display = 'none';
+      document.getElementById('main-title').style.display = 'none';
     }
   } catch (error) {
     console.error('Error updating UI after directory selection:', error);

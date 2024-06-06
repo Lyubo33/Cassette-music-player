@@ -11,6 +11,7 @@
   <body>
     <div class="container"> 
       <aside class="sidebar">
+        <img class="alt-logo" src="assets\Cassette.png" alt="Cassette-alt-logo"/>
          <div class ="search-div">
           <input id="search-box" class="search-box" type="text" placeholder="Search for a song">
           <ul id="search-results" class="search-results"></ul>
@@ -25,6 +26,7 @@
         <button id="choose-directory-sidebar"><img src="assets\misc-icons\folder-solid.svg" alt= "Choose directory"/>
           <span class="sidebar-button-text">Choose directory</span>
          </button>
+        
          </div>
          <button class="playlist-button" id="playlistToggle">Playlists</button>
          <div class="playlist-div" id="playlistDropdown">
@@ -33,29 +35,7 @@
             <!-- Playlists will be added here -->
           </ul>
          </div>
-          <div id="playlist-modal" class="modal">
-            <div class="modal-content">
-              <span class="close" id="close-modal">&times;</span>
-              <h2>Create Playlist</h2>
-              <input type="text" id="playlist-title" placeholder="Playlist Title " required />
-              <ul id="song-selection">
-                <!-- Songs will be listed here for selection -->
-              </ul>
-              <div id="create-modal-errors" class="modal-errors"></div>
-              <button id="create-playlist-btn">Create Playlist</button>
-            </div>
-          </div>  
-            <!--Modal for editing playlist -->
-          <div id="edit-modal" class="modal">
-            <div class="modal-content">
-              <span id="edit-modal-close" class="close">&times;</span>
-              <h2>Edit Playlist</h2>
-              <input type="text" id="edit-playlist-title" placeholder="Playlist Title">
-              <ul id="edit-song-selection"></ul>
-              <div id="edit-modal-errors" class="modal-errors"></div>
-              <button id="update-playlist-btn">Update Playlist</button>
-            </div>
-          </div>
+         
      </aside>
   <!--Main window -->
    <main class="main">
@@ -99,5 +79,30 @@
    </main>
 
     </div>
+
+    <div id="playlist-modal" class="modal">
+      <div class="modal-content">
+        <span class="close" id="close-modal">&times;</span>
+        <h2>Create Playlist</h2>
+        <input type="text" id="playlist-title" placeholder="Playlist Title " required />
+        <ul id="song-selection">
+          <!-- Songs will be listed here for selection -->
+        </ul>
+        <div id="create-modal-errors" class="modal-errors"></div>
+        <button id="create-playlist-btn">Create Playlist</button>
+      </div>
+    </div>  
+      <!--Modal for editing playlist -->
+    <div id="edit-modal" class="modal">
+      <div class="modal-content">
+        <span id="edit-modal-close" class="close">&times;</span>
+        <h2>Edit Playlist</h2>
+        <input type="text" id="edit-playlist-title" placeholder="Playlist Title">
+        <ul id="edit-song-selection"></ul>
+        <div id="edit-modal-errors" class="modal-errors"></div>
+        <button id="update-playlist-btn">Update Playlist</button>
+      </div>
+    </div>
+
   </body>
 </html>
