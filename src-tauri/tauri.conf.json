@@ -6,8 +6,8 @@
     "withGlobalTauri": true
   },
   "package": {
-    "productName": "music-player-project",
-    "version": "0.0.1"
+    "productName": "Cassette-music-player",
+    "version": "1.0.0"
   },
   "tauri": {
     "allowlist": {

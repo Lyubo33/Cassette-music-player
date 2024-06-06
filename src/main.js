@@ -39,7 +39,8 @@ async function deletePlaylist(title) {
   const confirmed = await confirm('Are you sure you want to delete this playlist?', { title: 'Delete Playlist', type: 'warning' });
   if (confirmed){
   await invoke('delete_playlist', { title });
-  location.reload();
+  await getAllSongs();
+  await Stop();
   }else{
      return;
   }
@@ -149,7 +150,7 @@ document.getElementById('create-playlist-btn').addEventListener('click', async (
   }
   await createPlaylist(title, selectedSongs);
   document.getElementById('playlist-modal').style.display = 'none';
-  displayPlaylists();
+  await displayPlaylists();
 });
 
 //Edit playlist modal functionality
@@ -550,8 +551,8 @@ async function updateUIAfterDirectorySelection(newDirectory) {
 
     if (fetchedSongs.length > 0) {
       displaySongs(fetchedSongs);
-      displayPlaylists();
-      Stop();
+      await displayPlaylists();
+      await Stop();
 
       // Update the UI visibility
       document.getElementById('initial-prompt').style.display = 'none';
