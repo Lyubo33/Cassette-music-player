@@ -2,6 +2,7 @@ const { invoke } = window.__TAURI__.tauri;
 
 let currently_edited_playlist = null;
 let allSongs = [];
+let UpdateInterval = null;
 
 async function fetchSongs() {
   try {
@@ -389,7 +390,7 @@ async function startUpdatingSongDetails() {
   
   
   // Update the song details every second
-  UpdateInterval=setInterval(updateDetails, 1000);
+  UpdateInterval = setInterval(updateDetails, 1000);
 }
 
 function stopUpdatingSongDetails(){

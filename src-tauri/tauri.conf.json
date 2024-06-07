@@ -29,7 +29,9 @@
       {
         "title": "Cassette",
         "width": 800,
-        "height": 600
+        "height": 600,
+        "fullscreen": false,
+        "maximized": true
       }
     ],
     "security": {
