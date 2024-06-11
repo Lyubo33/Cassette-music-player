@@ -61,7 +61,7 @@ impl AudioPlayer {
                             let file = File::open(file_path).unwrap();
                             let source = Decoder::new(BufReader::new(file)).unwrap();
                             *total_duration_clone.lock().unwrap() = source.total_duration().unwrap();
-                            sink.append(source);
+                            sink.append(source.fade_in(Duration::from_secs(3)));
                             *start_time_clone.lock().unwrap()= Some(Instant::now());
                         }else{sink.stop();} 
                     }else{
@@ -80,7 +80,7 @@ impl AudioPlayer {
                             let source = Decoder::new(BufReader::new(file)).unwrap();
                             *total_duration_clone.lock().unwrap() = source.total_duration().unwrap();
                             sink.stop();
-                            sink.append(source);
+                            sink.append(source.fade_in(Duration::from_secs(3)));
                             sink.play();
                             *start_time_clone.lock().unwrap() = Some(Instant::now());
                             *elapsed_time_clone.lock().unwrap() = Duration::from_secs(0);
@@ -111,7 +111,7 @@ impl AudioPlayer {
                             let source = Decoder::new(BufReader::new(file)).unwrap();
                             *total_duration_clone.lock().unwrap() = source.total_duration().unwrap();
                             sink.stop();
-                            sink.append(source);
+                            sink.append(source.fade_in(Duration::from_secs(3)));
                             sink.play();
                             *start_time_clone.lock().unwrap()= Some(Instant::now());
                             *elapsed_time_clone.lock().unwrap() = Duration::from_secs(0);

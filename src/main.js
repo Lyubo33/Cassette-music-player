@@ -3,6 +3,7 @@ const { invoke } = window.__TAURI__.tauri;
 let currently_edited_playlist = null;
 let allSongs = [];
 let UpdateInterval = null;
+let isPaused = true;
 
 async function fetchSongs() {
   try {
@@ -298,6 +299,10 @@ async function playPlaylist(title) {
    startUpdatingSongDetails();
    const root = document.querySelector(':root');
    root.classList.add("animated-gradient");
+   document.querySelectorAll('.cassette-animation').forEach(animation => {
+    animation.classList.add('playing');
+  });
+  isPaused = false;
 }
 
 // Initial display of playlists
@@ -309,6 +314,10 @@ async function Play() {
     await invoke('play');
     await GetSong();
     await startUpdatingSongDetails();
+    document.querySelectorAll('.cassette-animation').forEach(animation => {
+      animation.classList.add('playing');
+    });
+    isPaused = false;
   } catch (error) {
     console.error('Error invoking play command:', error);
   }
@@ -329,6 +338,10 @@ async function playFile(filePath) {
      await invoke('play_file', { filePath });
      await GetSong();
      await startUpdatingSongDetails();
+     document.querySelectorAll('.cassette-animation').forEach(animation => {
+      animation.classList.add('playing');
+    });
+    isPaused = false;
 
    }catch(error){
      console.error('Error invoking play file command')
@@ -339,6 +352,10 @@ async function Pause() {
   try {
     await invoke('pause');
     stopUpdatingSongDetails();
+    document.querySelectorAll('.cassette-animation').forEach(animation => {
+      animation.classList.remove('playing');
+    });
+    isPaused = true;
   } catch (error) {
     console.error('Error invoking pause command:', error);
   }
@@ -347,8 +364,11 @@ async function Pause() {
 async function Stop() {
   try {
     await invoke('stop');
-    stopUpdatingSongDetails();
-    resetSongDetails();
+    await stopUpdatingSongDetails();
+    await resetSongDetails();
+    document.querySelectorAll('.cassette-animation').forEach(animation => {
+      animation.classList.remove('playing');
+    });
   } catch (error) {
     console.error('Error invoking stop command:', error);
   }
@@ -359,6 +379,7 @@ async function Next() {
     await invoke('next');
     await GetSong();
     await startUpdatingSongDetails();
+    isPaused = false;
   } catch (error) {
     console.error('Error invoking next command:', error);
   }
@@ -378,6 +399,7 @@ async function Previous() {
     await invoke('previous');
     await GetSong();
     await startUpdatingSongDetails();
+    isPaused = false;
   } catch (error) {
     console.error('Error invoking previous command:', error);
   }
@@ -418,7 +440,7 @@ async function updateDetails() {
 }
 function clearSeekbarColor() {
   const Seekbar = document.getElementById('seek-bar');
-  Seekbar.style.backgroundColor = `#282828`; // Reset to default background color
+  Seekbar.style.background = '#282828'; // Reset to default background color
 }
 
  async function resetSongDetails() {
@@ -447,12 +469,14 @@ function updateSeekbarColor(currentPosition, totalDuration) {
 }
 
 document.getElementById('seek-bar').addEventListener('input', async (event) => {
+    await Pause();
     let seekPosition = event.target.value;
     await invoke('seek_position', { position: parseInt(seekPosition, 10) });
-    resetSongDetails();
     await startUpdatingSongDetails(); // Update the displayed position immediately
     // Update seekbar color
   updateSeekbarColor(seekPosition, event.target.max);
+  await Play();
+
 });
 async function getAllSongs() {
     await invoke('play_all_songs');
@@ -472,6 +496,10 @@ async function getAllSongs() {
     });
     const root = document.querySelector(':root');
     root.classList.add("animated-gradient");
+    document.querySelectorAll('.cassette-animation').forEach(animation => {
+      animation.classList.add('playing');
+    });
+    isPaused = false;
 }
 
 async function chooseDirectory() {
@@ -528,6 +556,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   playButton.addEventListener("click", startGradientAnimation);
   pauseButton.addEventListener("click", stopGradientAnimation);
   stopButton.addEventListener("click", stopGradientAnimation);
+
 });
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -572,6 +601,51 @@ async function updateUIAfterDirectorySelection(newDirectory) {
     console.error('Error updating UI after directory selection:', error);
   }
 }
+ async function playOrPause(){ 
+  if(isPaused){ 
+    await Play();
+    document.querySelector(':root').classList.add("animated-gradient");
+  }
+  else{
+     await Pause();
+     document.querySelector(':root').classList.remove("animated-gradient");
+  }
+}
+
+ async function handleKeyPress(event) {
+  switch (event.keyCode) {
+    case 179: // Play/Pause key for Play/Pause
+      event.preventDefault();
+      await playOrPause();
+      break;
+    case 32: // Spacebar for Play/Pause
+      event.preventDefault();
+      await playOrPause();
+      break;
+    case 176: // MediaTrackNext key for Next
+      event.preventDefault();
+      await Next();
+      break;
+    case 39: // ArrowRight key for Next
+      event.preventDefault();
+      await Next();
+      break;
+    case 177: // MediaTrackPrevious key  for Previous
+      event.preventDefault();
+       await Previous();
+      break;
+    case 37: // ArrowLeft key  for Previous
+      event.preventDefault();
+       await Previous();
+      break;
+    default:
+      break;
+  }
+}
+document.addEventListener('keydown', (event) => {
+  handleKeyPress(event);
+});
+
 
 
 

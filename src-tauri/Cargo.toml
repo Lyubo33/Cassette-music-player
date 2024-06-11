@@ -1,8 +1,8 @@
 [package]
 name = "music-player-project"
-version = "0.0.0"
-description = "A Tauri App"
-authors = ["you"]
+version = "1.0.0"
+description = "Cassette-music player"
+authors = ["Lyuboslav Petrov"]
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html

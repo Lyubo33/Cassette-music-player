@@ -11,7 +11,7 @@
   <body>
     <div class="container"> 
       <aside class="sidebar">
-        <img class="alt-logo" src="assets\Cassette.png" alt="Cassette-alt-logo"/>
+        <img class="logo" src="assets\Casette-Logo.png" alt="Cassette-logo"/>
          <div class ="search-div">
           <input id="search-box" class="search-box" type="text" placeholder="Search for a song">
           <ul id="search-results" class="search-results"></ul>
@@ -44,19 +44,25 @@
       <p>Please choose a music directory to get started.</p>
       <button id="choose-directory-main">Choose Directory</button>
     </div>
+      <ul id = "song-list">
 
-     <ul id="song-list">
-       <!-- Song items will be dynamically added here -->
-     </ul>
+      </ul>
+        
   <!--Audio controls and current song title block -->
      <div id="audio-control-div" class="audio-controls">
+      
        <h2 id="current-song" ></h2>
+       <div class="cassette-animation"> 
+        <div class="tape-reel left-reel"></div>
+        <div class="tape-reel right-reel"></div>
+      </div>
        <div>
          <span id="current-song-position">0:00</span> / <span id="total-song-duration">0:00</span>
        </div>
         <div>
            <input type="range" id="seek-bar" min="1" max="1000" value="-1">
         </div>
+        
      <div class="row">
      <button id="play-button">
        <img src="../assets/audio-control-icons/play-solid.svg" alt="Play" class="icon"/>
@@ -73,7 +79,9 @@
      <button id="previous-button">
        <img src="../assets/audio-control-icons/backward-solid.svg" alt="Previous" class="icon"/>
      </button>
+
      </div>
+     
      </div>
      
    </main>
