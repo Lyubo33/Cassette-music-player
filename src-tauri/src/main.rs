@@ -85,12 +85,12 @@ fn get_current_song(state: State<'_,AppState>)->PathBuf{
 #[tauri::command]
 fn get_current_position(state: State<'_,AppState>)-> u64{
      let current_position = state.player.get_current_position();
-     current_position.as_secs() as u64
+     current_position.as_secs() 
 }
 #[tauri::command]
 fn get_total_duration(state: State<'_,AppState>)-> u64{
     let total_duration = state.player.get_total_duration();
-    total_duration.as_secs() as u64
+    total_duration.as_secs() 
 }
 #[tauri::command]
 fn seek_position(state: State<'_,AppState>,position: u64){
