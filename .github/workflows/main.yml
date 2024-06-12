@@ -4,6 +4,8 @@ on:
   release:
     types: [created]
 
+# This workflow will trigger on each release creation, to create and build your app, and upload the artifacts to the release.
+
 jobs:
   publish-tauri:
     permissions:
@@ -51,7 +53,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tagName: app-v__VERSION__ # the action automatically replaces __VERSION__ with the app version.
+          tagName: app-v__VERSION__ # the action automatically replaces \_\_VERSION\_\_ with the app version.
           releaseName: 'App v__VERSION__'
           releaseBody: 'See the assets to download this version and install.'
           releaseDraft: true
