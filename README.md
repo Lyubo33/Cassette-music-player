@@ -26,7 +26,7 @@ Cassette is a desktop music player that allows you to play music files from a lo
 
 ## Installation
 ### 1. Check Releases
-1. Go to releases and download the setup.exe or the appropriate file for your system
+1. Go to [releases](https://github.com/Lyubo33/Cassette-music-player/releases/) and download the setup.exe or the appropriate file for your system
 2. (On Windows)If your system prompts you that the file is dangerous, click on 'More info' and press 'Run Anyway', this is because of Microsoft's policies towards third party apps and code signing and not because this app or simmilar apps are inherently dangerous.
 3. (Other Systems) Haven't tested it but the process should be simmilar if you get prompted that the file is dangerous, or unrecognized
 ### 2. Build yourself
