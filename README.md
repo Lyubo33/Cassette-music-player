@@ -64,14 +64,14 @@ Contributers are welcome, if you have desire to contribute please submit a pull 
 
 ## Screenshots
 <p>
-<img src="readme_assets/Screenshot_1.png" margin-right="15" width="300">
-<img src="readme_assets/Screenshot_2.png" margin-right="15" width="300">
-<img src="readme_assets/Screenshot_3.png" width="300">
+<img src="readme_assets/Screenshot_1.png" margin-right="10" width="200">
+<img src="readme_assets/Screenshot_2.png" margin-right="10" width="200">
+<img src="readme_assets/Screenshot_3.png" width="200">
 </p>
 <p margin-top="10">
-<img src="readme_assets/Screenshot_4.png" margin-right="15" width="300">
-<img src="readme_assets/Screenshot_5.png" margin-right="15" width="300">
-<img src="readme_assets/Screenshot_6.png" width="300">
+<img src="readme_assets/Screenshot_4.png" margin-right="10" width="200">
+<img src="readme_assets/Screenshot_5.png" margin-right="10" width="200">
+<img src="readme_assets/Screenshot_6.png" width="200">
 </p>
 <p margin-top="10">
 <img src="readme_assets/Screenshot_7.png" width="500">
