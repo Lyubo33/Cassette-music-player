@@ -1,11 +1,10 @@
 name: 'publish'
 
 on:
-  push:
-    branches:
-      - release
+  release:
+    types: [created]
 
-# This workflow will trigger on each push to the `release` branch to create or update a GitHub release, build your app, and upload the artifacts to the release.
+# This workflow will trigger on each release creation, to create and build your app, and upload the artifacts to the release.
 
 jobs:
   publish-tauri:
@@ -28,6 +27,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+
       - name: install Rust stable
         uses: dtolnay/rust-toolchain@stable
         with:
@@ -43,7 +47,7 @@ jobs:
         # You can remove the one that doesn't apply to your app to speed up the workflow a bit.
 
       - name: install frontend dependencies
-        run: cargo install # change this to npm, pnpm or bun depending on which one you use.
+        run: yarn install # change this to npm, pnpm or bun depending on which one you use.
 
       - uses: tauri-apps/tauri-action@v0
         env:
